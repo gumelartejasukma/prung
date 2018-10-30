@@ -50,6 +50,18 @@ function handleError(res, reason, message, code) {
  *    POST: creates a new contact
  */
 
+ app.post("/login/facebook", function(req, res) {
+   db.collection(USERS_COLLECTION).findOne({ facebook_id: new ObjectID(req.body.facebook_id) }, function(err, doc) {
+     if (err) {
+       handleError(res, err.message, "Failed to get contact");
+     } else {
+       console.log(doc);
+       res.status(200).json(doc);
+     }
+   });
+ });
+
+
  app.get("/events", function(req, res) {
    db.collection(EVENTS_COLLECTION).find({}).toArray(function(err, docs) {
      if (err) {
