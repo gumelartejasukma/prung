@@ -55,6 +55,9 @@ function handleError(res, reason, message, code) {
      if (err) {
        handleError(res, err.message, "Failed to get contact");
      } else {
+       if(!doc){
+         addUser(req,res);
+       }
        res.status(200).json(doc);
      }
    });
@@ -82,6 +85,10 @@ app.get("/users", function(req, res) {
 });
 
 app.post("/users", function(req, res) {
+  addUser(req,res);
+});
+
+function addUser(req,res){
   // res.status(500).json({"log": JSON.stringify(req.body)});
   var newUser = req.body;
   newUser.token = generateToken();
@@ -93,11 +100,11 @@ app.post("/users", function(req, res) {
       if (err) {
         handleError(res, err.message, "Failed to create new contact.");
       } else {
-        res.status(201).json(doc.ops[0]);
+        res.status(200).json(doc.ops[0]);
       }
     });
   }
-});
+}
 
 /*  "/api/contacts/:id"
  *    GET: find contact by id
