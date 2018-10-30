@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 var db;
 
 // Connect to the database before starting the application server.
-mongodb.MongoClient.connect(process.env.MONGODB_URI || "mongodb+srv://admin:admin@cluster0-jofyq.gcp.mongodb.net/test?retryWrites=true", function (err, client) {
+mongodb.MongoClient.connect(process.env.MONGODB_URI || "mongodb+srv://admin:admin@cluster0-jofyq.gcp.mongodb.net/prungdb?retryWrites=true", function (err, client) {
   if (err) {
     console.log(err);
     process.exit(1);
@@ -62,7 +62,7 @@ app.post("/users", function(req, res) {
   var newUser = req.body;
 
   if (!newUser.name) {
-    handleError(res, "Invalid user input", "Must provide a "+JSON.stringify(newUser), 400);
+    handleError(res, "Invalid user input", "Must provide a name", 400);
   } else {
     db.collection(USERS_COLLECTION).insertOne(newUser, function(err, doc) {
       if (err) {
