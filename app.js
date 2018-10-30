@@ -1,6 +1,8 @@
 var express = require("express");
 var bodyParser = require("body-parser");
 var mongodb = require("mongodb");
+var crypto = require('crypto');
+
 var ObjectID = mongodb.ObjectID;
 
 var USERS_COLLECTION = "users";
@@ -60,6 +62,7 @@ app.get("/users", function(req, res) {
 app.post("/users", function(req, res) {
   // res.status(500).json({"log": JSON.stringify(req.body)});
   var newUser = req.body;
+  newUser.token = crypto.randomBytes(Math.ceil(48/2)).toString('hex').slice(0,48);
 
   if (!newUser.name) {
     handleError(res, "Invalid user input", "Must provide a name", 400);
