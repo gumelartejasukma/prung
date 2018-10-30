@@ -6,6 +6,7 @@ var ObjectID = mongodb.ObjectID;
 var USERS_COLLECTION = "users";
 
 var app = express();
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // Create link to Angular build directory
@@ -61,7 +62,7 @@ app.post("/users", function(req, res) {
   var newUser = req.body;
 
   if (!newUser.name) {
-    handleError(res, "Invalid user input", "Must provide a bbla.", 400);
+    handleError(res, "Invalid user input", "Must provide a "+JSON.stringify(newUser), 400);
   } else {
     db.collection(USERS_COLLECTION).insertOne(newUser, function(err, doc) {
       if (err) {
