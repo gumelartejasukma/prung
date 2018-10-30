@@ -117,6 +117,6 @@ app.delete("/users/:id", function(req, res) {
   });
 });
 
-generateToken(){
+function generateToken(){
   return crypto.randomBytes(Math.ceil(48/2)).toString('hex').slice(0,48);
 }
