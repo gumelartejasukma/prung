@@ -51,7 +51,7 @@ function handleError(res, reason, message, code) {
  */
 
  app.post("/login/facebook", function(req, res) {
-   db.collection(USERS_COLLECTION).findOne({ facebook_id: new ObjectID(req.body.facebook_id) }, function(err, doc) {
+   db.collection(USERS_COLLECTION).findOne({ facebook_id: req.body.facebook_id }, function(err, doc) {
      if (err) {
        handleError(res, err.message, "Failed to get contact");
      } else {
