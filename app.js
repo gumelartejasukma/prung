@@ -6,6 +6,7 @@ var crypto = require('crypto');
 var ObjectID = mongodb.ObjectID;
 
 var USERS_COLLECTION = "users";
+var EVENTS_COLLECTION = "events";
 
 var app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -48,6 +49,16 @@ function handleError(res, reason, message, code) {
  *    GET: finds all contacts
  *    POST: creates a new contact
  */
+
+ app.get("/events", function(req, res) {
+   db.collection(EVENTS_COLLECTION).find({}).toArray(function(err, docs) {
+     if (err) {
+       handleError(res, err.message, "Failed to get contacts.");
+     } else {
+       res.status(200).json(docs);
+     }
+   });
+ });
 
 app.get("/users", function(req, res) {
   db.collection(USERS_COLLECTION).find({}).toArray(function(err, docs) {
