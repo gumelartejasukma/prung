@@ -46,7 +46,7 @@ function handleError(res, reason, message, code) {
  *    POST: creates a new contact
  */
 
-app.get("/contacts", function(req, res) {
+app.get("/users", function(req, res) {
   db.collection(CONTACTS_COLLECTION).find({}).toArray(function(err, docs) {
     if (err) {
       handleError(res, err.message, "Failed to get contacts.");
@@ -56,7 +56,7 @@ app.get("/contacts", function(req, res) {
   });
 });
 
-app.post("/contacts", function(req, res) {
+app.post("/users", function(req, res) {
   var newContact = req.body;
   newContact.createDate = new Date();
 
@@ -79,7 +79,7 @@ app.post("/contacts", function(req, res) {
  *    DELETE: deletes contact by id
  */
 
-app.get("/contacts/:id", function(req, res) {
+app.get("/users/:id", function(req, res) {
   db.collection(CONTACTS_COLLECTION).findOne({ _id: new ObjectID(req.params.id) }, function(err, doc) {
     if (err) {
       handleError(res, err.message, "Failed to get contact");
@@ -89,7 +89,7 @@ app.get("/contacts/:id", function(req, res) {
   });
 });
 
-app.put("/contacts/:id", function(req, res) {
+app.put("/users/:id", function(req, res) {
   var updateDoc = req.body;
   delete updateDoc._id;
 
@@ -103,7 +103,7 @@ app.put("/contacts/:id", function(req, res) {
   });
 });
 
-app.delete("/contacts/:id", function(req, res) {
+app.delete("/users/:id", function(req, res) {
   db.collection(CONTACTS_COLLECTION).deleteOne({_id: new ObjectID(req.params.id)}, function(err, result) {
     if (err) {
       handleError(res, err.message, "Failed to delete contact");
