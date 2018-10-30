@@ -57,8 +57,9 @@ function handleError(res, reason, message, code) {
      } else {
        if(!doc){
          addUser(req,res);
+       }else{
+         res.status(200).json(doc);
        }
-       res.status(200).json(doc);
      }
    });
  });
