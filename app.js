@@ -102,8 +102,8 @@ function handleError(res, reason, message, code) {
          if (err) {
            handleError(res, err.message, "Failed to update event");
          } else {
-           doc.ops[0].network_message = "Success join Event";
-           res.status(200).json(doc.ops[0]);
+           doc.network_message = "Success join Event";
+           res.status(200).json(doc);
          }
        });
      }
