@@ -101,7 +101,7 @@ function handleError(res, reason, message, code) {
    user.picture = body.user_picture;
    chat.user = user;
    chat.message = body.message;
-   var hrTime = process.hartime();
+   var hrTime = process.hrtime();
    chat.created_at = hrTime[0] * 1000000 + hrTime[1] / 1000;
    db.collection(CHATS_COLLECTION+body.event_id).insertOne(chat, function(err, doc) {
      if (err) {
