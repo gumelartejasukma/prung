@@ -144,22 +144,22 @@ app.get("/users/:id", function(req, res) {
     if (err) {
       handleError(res, err.message, "Failed to get contact");
     } else {
-      // if(doc.events && doc.events.length>0){
-      //   let events = doc.events.map(function(eventId){
-      //     return new ObjectID(eventId);
-      //   });
-      //   let filter = {_id:{$in : events}};
-      //   db.collection(EVENTS_COLLECTION).find(filter).toArray(function(err, docs) {
-      //     if (err) {
-      //       handleError(res, err.message, "Failed to get events.");
-      //     } else {
-      //       doc.events = docs;
-      //       res.status(200).json(doc);
-      //     }
-      //   });
-      // }else{
+      if(doc.events && doc.events.length>0){
+        let events = doc.events.map(function(eventId){
+          return new ObjectID(eventId);
+        });
+        let filter = {_id:{$in : events}};
+        db.collection(EVENTS_COLLECTION).find(filter).toArray(function(err, docs) {
+          if (err) {
+            handleError(res, err.message, "Failed to get events.");
+          } else {
+            doc.events = docs;
+            res.status(200).json(doc);
+          }
+        });
+      }else{
         res.status(200).json(doc);
-      // }
+      }
     }
   });
 });
