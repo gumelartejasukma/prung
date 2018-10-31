@@ -110,13 +110,23 @@ function handleError(res, reason, message, code) {
  });
 
  app.get("/events", function(req, res) {
-   db.collection(EVENTS_COLLECTION).find({}).toArray(function(err, docs) {
-     if (err) {
-       handleError(res, err.message, "Failed to get events.");
-     } else {
-       res.status(200).json(docs);
-     }
-   });
+   if(!req.query.id){
+     db.collection(EVENTS_COLLECTION).find({}).toArray(function(err, docs) {
+       if (err) {
+         handleError(res, err.message, "Failed to get events.");
+       } else {
+         res.status(200).json(docs);
+       }
+     });
+   }else{
+     db.collection(EVENTS_COLLECTION).findOne({ _id: new ObjectID(req.query.id) }, function(err, doc) {
+       if (err) {
+         handleError(res, err.message, "Event not found");
+       } else {
+         res.status(200).json(doc);
+       }
+     });
+   }
  });
 
 app.get("/users", function(req, res) {
@@ -217,6 +227,7 @@ function addEvent(req,res){
   event['date'] = body.date;
   event['time'] = body.time;
   event['player_needed'] = body.player_needed;
+  event['members'] = [body.user_id];
 
   db.collection(EVENTS_COLLECTION).insertOne(event, function(err, doc) {
     if (err) {
