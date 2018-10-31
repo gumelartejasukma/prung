@@ -204,6 +204,13 @@ function addEvent(req,res){
       handleError(res, err.message, "Failed to create new event.");
     } else {
       res.status(200).json(doc.ops[0]);
+      db.collection(USERS_COLLECTION).findOneAndUpdate({ _id: new ObjectID(body.user_id) },{$addToSet:{"events":events:doc.ops[0]._id}},function(err, doc) {
+        if (err) {
+          // handleError(res, err.message, "Failed to update event");
+        } else {
+          // res.status(200).json(doc);
+        }
+      });
     }
   });
 }
