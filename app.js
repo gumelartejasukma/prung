@@ -9,6 +9,7 @@ var ObjectID = mongodb.ObjectID;
 var USERS_COLLECTION = "users";
 var EVENTS_COLLECTION = "events";
 var HASHTAGS_COLLECTION = "hashtags";
+var CHATS_COLLECTION = "chats";
 
 var app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -91,6 +92,27 @@ function handleError(res, reason, message, code) {
    });
  });
 
+ app.post("/chats", function(req, res) {
+   var chat = req.body;
+   db.collection(CHATS_COLLECTION+chat.event_id).insertOne({user_id:chat.user_id,message:chat.message}, function(err, doc) {
+     if (err) {
+       handleError(res, err.message, "Failed to create hashtag.");
+     } else {
+       res.status(200).json(doc.ops);
+     }
+   });
+ });
+
+  app.get("/chats", function(req, res) {
+    db.collection(CHATS_COLLECTION+req.query.event_id).find({}).toArray(function(err, docs) {
+      if (err) {
+        handleError(res, err.message, "Failed to get chats.");
+      } else {
+        res.status(200).json(docs);
+      }
+    });
+  });
+
  app.post("/event", function(req, res) {
    var event = req.body;
    if(!event.hashtag_id){
@@ -134,6 +156,8 @@ function handleError(res, reason, message, code) {
              } else {
                doc.members = docs.map(function(member){
                  delete member.events;
+                 delete member.token;
+                 delete member.facebook_id;
                  return member;
                });
                res.status(200).json(doc);
