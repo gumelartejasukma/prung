@@ -91,11 +91,28 @@ function handleError(res, reason, message, code) {
    });
  });
 
+ app.post("/event", function(req, res) {
+   var event = req.body;
+   if(!event.hashtag_id){
+     var hashtag = {};
+     hashtag.name = event.hashtag_name;
+     db.collection(HASHTAGS_COLLECTION).insertOne(hashtag, function(err, doc) {
+       if (err) {
+         handleError(res, err.message, "Failed to create hashtag.");
+       } else {
+         req.body.hashtag_id = doc.ops[0]._id;
+         addEvent(req,res);
+       }
+     });
+   }else{
+     addEvent(req,res);
+   }
+ });
 
  app.get("/events", function(req, res) {
    db.collection(EVENTS_COLLECTION).find({}).toArray(function(err, docs) {
      if (err) {
-       handleError(res, err.message, "Failed to get contacts.");
+       handleError(res, err.message, "Failed to get events.");
      } else {
        res.status(200).json(docs);
      }
@@ -115,24 +132,6 @@ app.get("/users", function(req, res) {
 app.post("/users", function(req, res) {
   addUser(req,res);
 });
-
-function addUser(req,res){
-  // res.status(500).json({"log": JSON.stringify(req.body)});
-  var newUser = req.body;
-  newUser.token = generateToken();
-
-  if (!newUser.name) {
-    handleError(res, "Invalid user input", "Must provide a name", 400);
-  } else {
-    db.collection(USERS_COLLECTION).insertOne(newUser, function(err, doc) {
-      if (err) {
-        handleError(res, err.message, "Failed to create new contact.");
-      } else {
-        res.status(200).json(doc.ops[0]);
-      }
-    });
-  }
-}
 
 /*  "/api/contacts/:id"
  *    GET: find contact by id
@@ -176,4 +175,51 @@ app.delete("/users/:id", function(req, res) {
 
 function generateToken(){
   return crypto.randomBytes(Math.ceil(48/2)).toString('hex').slice(0,48);
+}
+
+function addEvent(req,res){
+  var body = req.body;
+  var event = {};
+  event['title'] = body.title;
+  var venue = {};
+  venue['name'] = body.venue_name;
+  venue['latitude'] = body.venue_latitude;
+  venue['longitude'] = body.venue_longitude;
+  event['venue'] = venue;
+  event['description'] = body.description;
+  var hashtag = {};
+  hashtag['id'] = body.hashtag_id;
+  hashtag['name'] = body.hashtag_name;
+  event['hashtag'] = hashtag;
+  var by = {};
+  by['id'] = body.user_id;
+  by['name'] = body.user_name;
+  event['by'] = by;
+  event['date'] = body.date;
+  event['time'] = body.time;
+
+  db.collection(EVENTS_COLLECTION).insertOne(event, function(err, doc) {
+    if (err) {
+      handleError(res, err.message, "Failed to create new event.");
+    } else {
+      res.status(200).json(doc.ops[0]);
+    }
+  });
+}
+
+function addUser(req,res){
+  var newUser = req.body;
+  newUser.token = generateToken();
+
+  if (!newUser.name) {
+    handleError(res, "Invalid user input", "Must provide a name", 400);
+  } else {
+    db.collection(USERS_COLLECTION).insertOne(newUser, function(err, doc) {
+      if (err) {
+        handleError(res, err.message, "Failed to create new contact.");
+      } else {
+        res.status(200).json(doc.ops[0]);
+      }
+    });
+  }
 }
