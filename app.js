@@ -233,13 +233,11 @@ function addEvent(req,res){
     if (err) {
       handleError(res, err.message, "Failed to create new event.");
     } else {
-      // db.collection(USERS_COLLECTION).findOne({ _id: new ObjectID(body.user_id) }, function(err2,doc2){
-      //   doc2.events.push()
-      // });
       db.collection(USERS_COLLECTION).findOneAndUpdate({ _id: new ObjectID(body.user_id) },{$push:{events:doc.ops[0]._id}},{safe:true,upsert:true},function(err2, doc2) {
         if (err2) {
           handleError(res, err2.message, "Failed to update event");
         } else {
+          doc.ops[0].network_message = "Success create event";
           res.status(200).json(doc.ops[0]);
         }
       });
