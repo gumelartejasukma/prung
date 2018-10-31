@@ -107,7 +107,7 @@ function handleError(res, reason, message, code) {
      if (err) {
        handleError(res, err.message, "Failed to create hashtag.");
      } else {
-       res.status(200).json(doc.ops);
+       res.status(200).json(doc.ops[0]);
      }
    });
  });
