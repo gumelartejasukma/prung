@@ -92,6 +92,27 @@ function handleError(res, reason, message, code) {
    });
  });
 
+ app.post("/leave", function(req, res) {
+   var body = req.body;
+   db.collection(EVENTS_COLLECTION).findOneAndUpdate({ _id: new ObjectID(body.id) },{$pull:{members:body.user_id}},{safe:true,upsert:true},function(err, doc) {
+     if (err) {
+       handleError(res, err.message, "Failed to update event");
+     } else {
+       db.collection(USERS_COLLECTION).findOneAndUpdate({ _id: new ObjectID(body.user_id) },{$pull:{events:body.id}},{safe:true,upsert:true},function(err, doc) {
+         if (err) {
+           handleError(res, err.message, "Failed to update event");
+         } else {
+           doc.network_message = "Success join Event";
+           delete doc.value.facebook_id;
+           delete doc.value.token;
+           delete doc.value.events;
+           res.status(200).json(doc);
+         }
+       });
+     }
+   });
+ });
+
  app.post("/join", function(req, res) {
    var body = req.body;
    db.collection(EVENTS_COLLECTION).findOneAndUpdate({ _id: new ObjectID(body.id) },{$push:{members:body.user_id}},{safe:true,upsert:true},function(err, doc) {
@@ -304,7 +325,7 @@ function addEvent(req,res){
     if (err) {
       handleError(res, err.message, "Failed to create new event.");
     } else {
-      db.collection(USERS_COLLECTION).findOneAndUpdate({ _id: new ObjectID(body.user_id) },{$push:{events:doc.ops[0]._id}},{safe:true,upsert:true},function(err2, doc2) {
+      db.collection(USERS_COLLECTION).findOneAndUpdate({ _id: new ObjectID(body.user_id) },{$push:{events:doc.ops[0]._id.str}},{safe:true,upsert:true},function(err2, doc2) {
         if (err2) {
           handleError(res, err2.message, "Failed to update event");
         } else {
