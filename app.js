@@ -98,7 +98,7 @@ function handleError(res, reason, message, code) {
      if (err) {
        handleError(res, err.message, "Failed to update event");
      } else {
-       db.collection(USERS_COLLECTION).findOneAndUpdate({ _id: new ObjectID(body.user_id) },{$push:{events:body._id}},{safe:true,upsert:true},function(err, doc) {
+       db.collection(USERS_COLLECTION).findOneAndUpdate({ _id: new ObjectID(body.user_id) },{$push:{events:body.id}},{safe:true,upsert:true},function(err, doc) {
          if (err) {
            handleError(res, err.message, "Failed to update event");
          } else {
