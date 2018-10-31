@@ -203,7 +203,7 @@ function addEvent(req,res){
     if (err) {
       handleError(res, err.message, "Failed to create new event.");
     } else {
-      db.collection(USERS_COLLECTION).findOneAndUpdate({ _id: new ObjectID(body.user_id) },{$addToSet:{events:events:doc.ops[0]._id}},function(err2, doc2) {
+      db.collection(USERS_COLLECTION).findOneAndUpdate({ _id: new ObjectID(body.user_id) },{$push:{events:events:doc.ops[0]._id}},{safe:true,upsert:true},function(err2, doc2) {
         if (err2) {
           handleError(res, err2.message, "Failed to update event");
         } else {
