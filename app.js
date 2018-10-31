@@ -103,6 +103,9 @@ function handleError(res, reason, message, code) {
            handleError(res, err.message, "Failed to update event");
          } else {
            doc.network_message = "Success join Event";
+           delete doc.value.facebook_id;
+           delete doc.value.token;
+           delete doc.value.events;
            res.status(200).json(doc);
          }
        });
