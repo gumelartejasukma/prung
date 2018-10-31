@@ -98,12 +98,12 @@ function handleError(res, reason, message, code) {
      if (err) {
        handleError(res, err.message, "Failed to update event");
      } else {
-       db.collection(USERS_COLLECTION).findOneAndUpdate({ _id: new ObjectID(body.user_id) },{$push:{events:body.id}},{safe:true,upsert:true},function(err, doc) {
+       db.collection(USERS_COLLECTION).findOneAndUpdate({ _id: new ObjectID(body.user_id) },{$push:{events:body.id}},{safe:true,upsert:true},function(err2, doc2) {
          if (err) {
-           handleError(res, err.message, "Failed to update event");
+           handleError(res, err2.message, "Failed to update event");
          } else {
-           doc.ops[0].network_message = "Success join Event";
-           res.status(200).json(doc.ops[0]);
+           doc2.ops[0].network_message = "Success join Event";
+           res.status(200).json(doc2.ops[0]);
          }
        });
      }
