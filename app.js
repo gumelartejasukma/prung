@@ -94,6 +94,14 @@ function handleError(res, reason, message, code) {
 
  app.post("/join", function(req, res) {
    let body = req.body;
+   // db.collection(EVENTS_COLLECTION).findOne({ _id: new ObjectID(body.id)},function(err,doc){
+   //   if (err) {
+   //     handleError(res, err.message, "Failed to update event");
+   //   } else {
+   //     doc.members.push(body.user_id);
+   //
+   //   }
+   // });
    db.collection(EVENTS_COLLECTION).findOneAndUpdate({ _id: new ObjectID(body.id) },{$push:{members:body.user_id}},{safe:true,upsert:true},function(err, doc) {
      if (err) {
        handleError(res, err.message, "Failed to update event");
@@ -106,7 +114,7 @@ function handleError(res, reason, message, code) {
        //     ;
        //   }
        // });
-       res.status(200).json(doc.ops[0])
+       res.status(200).json(doc.ops[0]);
      }
    });
  });
