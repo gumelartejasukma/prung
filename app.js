@@ -93,8 +93,15 @@ function handleError(res, reason, message, code) {
  });
 
  app.post("/chats", function(req, res) {
-   var chat = req.body;
-   db.collection(CHATS_COLLECTION+chat.event_id).insertOne({user_id:chat.user_id,message:chat.message}, function(err, doc) {
+   let body = req.body;
+   var chat = {};
+   var user = {};
+   user.name = body.user_name;
+   user.id = body.user_id;
+   user.picture = body.user_picture;
+   chat.user = user;
+   chat.message = message;
+   db.collection(CHATS_COLLECTION+chat.event_id).insertOne(chat, function(err, doc) {
      if (err) {
        handleError(res, err.message, "Failed to create hashtag.");
      } else {
