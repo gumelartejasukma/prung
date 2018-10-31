@@ -197,6 +197,7 @@ function addEvent(req,res){
   event['by'] = by;
   event['date'] = body.date;
   event['time'] = body.time;
+  event['player_needed'] = body.player_needed;
 
   db.collection(EVENTS_COLLECTION).insertOne(event, function(err, doc) {
     if (err) {
