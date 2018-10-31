@@ -101,7 +101,7 @@ function handleError(res, reason, message, code) {
    user.picture = body.user_picture;
    chat.user = user;
    chat.message = body.message;
-   db.collection(CHATS_COLLECTION+body.event_id).insertOne(chat, function(err, doc) {
+   db.collection(CHATS_COLLECTION+body.event_id.toString()).insertOne(chat, function(err, doc) {
      if (err) {
        handleError(res, err.message, "Failed to create hashtag.");
      } else {
@@ -111,7 +111,7 @@ function handleError(res, reason, message, code) {
  });
 
   app.get("/chats", function(req, res) {
-    db.collection(CHATS_COLLECTION+req.query.event_id).find({}).toArray(function(err, docs) {
+    db.collection(CHATS_COLLECTION+req.query.event_id.toString()).find({}).toArray(function(err, docs) {
       if (err) {
         handleError(res, err.message, "Failed to get chats.");
       } else {
