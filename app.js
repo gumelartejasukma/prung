@@ -113,7 +113,7 @@ function handleError(res, reason, message, code) {
  });
 
   app.get("/chats", function(req, res) {
-    db.collection(CHATS_COLLECTION+req.query.event_id).find({}).toArray(function(err, docs) {
+    db.collection(CHATS_COLLECTION+req.query.event_id).find({}).sort({created_at:-1}).toArray(function(err, docs) {
       if (err) {
         handleError(res, err.message, "Failed to get chats.");
       } else {
