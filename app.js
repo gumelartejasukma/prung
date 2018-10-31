@@ -157,7 +157,6 @@ app.get("/users/:id", function(req, res) {
             res.status(200).json(doc);
           }
         });
-      });
       }else{
         res.status(200).json(doc);
       }
