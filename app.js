@@ -2,11 +2,13 @@ var express = require("express");
 var bodyParser = require("body-parser");
 var mongodb = require("mongodb");
 var crypto = require('crypto');
+var imgur = require('imgur');
 
 var ObjectID = mongodb.ObjectID;
 
 var USERS_COLLECTION = "users";
 var EVENTS_COLLECTION = "events";
+var HASHTAGS_COLLECTION = "hashtags";
 
 var app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -49,6 +51,31 @@ function handleError(res, reason, message, code) {
  *    GET: finds all contacts
  *    POST: creates a new contact
  */
+
+ app.post("/hashtag", function(req, res) {
+   var hashtag = req.body;
+   if (!hashtag.name) {
+     handleError(res, "Invalid user input", "Must provide hashtag", 400);
+   } else {
+     db.collection(HASHTAGS_COLLECTION).insertOne(hashtag, function(err, doc) {
+       if (err) {
+         handleError(res, err.message, "Failed to create new contact.");
+       } else {
+         res.status(200).json(doc.ops[0]);
+       }
+     });
+   }
+ });
+
+ app.get("/hashtags", function(req, res) {
+   db.collection(HASHTAGS_COLLECTION).find({}).toArray(function(err, docs) {
+     if (err) {
+       handleError(res, err.message, "Failed to get contacts.");
+     } else {
+       res.status(200).json(docs);
+     }
+   });
+ });
 
  app.post("/login/facebook", function(req, res) {
    db.collection(USERS_COLLECTION).findOne({ facebook_id: req.body.facebook_id }, function(err, doc) {
