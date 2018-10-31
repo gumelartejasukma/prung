@@ -123,7 +123,25 @@ function handleError(res, reason, message, code) {
        if (err) {
          handleError(res, err.message, "Event not found");
        } else {
-         res.status(200).json(doc);
+         if(doc.members && doc.members.length>0){
+           let members = doc.members.map(function(memberId){
+             return new ObjectID(memberId);
+           });
+           let filter = {_id:{$in : members}};
+           db.collection(USERS_COLLECTION).find(filter).toArray(function(err, docs) {
+             if (err) {
+               handleError(res, err.message, "Failed to get members.");
+             } else {
+               doc.members = docs.map(function(member){
+                 delete member.events;
+                 return member;
+               });
+               res.status(200).json(doc);
+             }
+           });
+         }else{
+           res.status(200).json(doc);
+         }
        }
      });
    }
