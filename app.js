@@ -120,7 +120,15 @@ function handleError(res, reason, message, code) {
  });
 
 app.get("/users", function(req, res) {
-  if(req.query.id){
+  if(!req.query.id){
+    db.collection(USERS_COLLECTION).find({}).toArray(function(err, docs) {
+      if (err) {
+        handleError(res, err.message, "Failed to get contacts.");
+      } else {
+        res.status(200).json(docs);
+      }
+    });
+  }else{
     db.collection(USERS_COLLECTION).findOne({ _id: new ObjectID(req.query.id) }, function(err, doc) {
       if (err) {
         handleError(res, err.message, "Failed to get contact");
@@ -141,14 +149,6 @@ app.get("/users", function(req, res) {
         }else{
           res.status(200).json(doc);
         }
-      }
-    });
-  }else{
-    db.collection(USERS_COLLECTION).find({}).toArray(function(err, docs) {
-      if (err) {
-        handleError(res, err.message, "Failed to get contacts.");
-      } else {
-        res.status(200).json(docs);
       }
     });
   }
