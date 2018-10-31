@@ -92,6 +92,24 @@ function handleError(res, reason, message, code) {
    });
  });
 
+ app.post("/join", function(req, res) {
+   let body = req.body;
+   db.collection(EVENTS_COLLECTION).findOneAndUpdate({ _id: new ObjectID(body.id) },{$push:{members:body.user_id}},{safe:true,upsert:true},function(err, doc) {
+     if (err) {
+       handleError(res, err.message, "Failed to update event");
+     } else {
+       db.collection(USERS_COLLECTION).findOneAndUpdate({ _id: new ObjectID(body.user_id) },{$push:{events:body._id}},{safe:true,upsert:true},function(err, doc) {
+         if (err) {
+           handleError(res, err.message, "Failed to update event");
+         } else {
+           doc.ops[0].network_message = "Success join Event";
+           res.status(200).json({doc.ops[0]});
+         }
+       });
+     }
+   });
+ });
+
  app.post("/chats", function(req, res) {
    let body = req.body;
    var chat = {};
