@@ -120,13 +120,38 @@ function handleError(res, reason, message, code) {
  });
 
 app.get("/users", function(req, res) {
-  db.collection(USERS_COLLECTION).find({}).toArray(function(err, docs) {
-    if (err) {
-      handleError(res, err.message, "Failed to get contacts.");
-    } else {
-      res.status(200).json(docs);
-    }
-  });
+  if(req.query.id){
+    db.collection(USERS_COLLECTION).findOne({ _id: new ObjectID(req.query.id) }, function(err, doc) {
+      if (err) {
+        handleError(res, err.message, "Failed to get contact");
+      } else {
+        if(doc.events && doc.events.length>0){
+          let events = doc.events.map(function(eventId){
+            return new ObjectID(eventId);
+          });
+          let filter = {_id:{$in : events}};
+          db.collection(EVENTS_COLLECTION).find(filter).toArray(function(err, docs) {
+            if (err) {
+              handleError(res, err.message, "Failed to get events.");
+            } else {
+              doc.events = docs;
+              res.status(200).json(doc);
+            }
+          });
+        }else{
+          res.status(200).json(doc);
+        }
+      }
+    });
+  }else{
+    db.collection(USERS_COLLECTION).find({}).toArray(function(err, docs) {
+      if (err) {
+        handleError(res, err.message, "Failed to get contacts.");
+      } else {
+        res.status(200).json(docs);
+      }
+    });
+  }
 });
 
 app.post("/users", function(req, res) {
@@ -139,30 +164,9 @@ app.post("/users", function(req, res) {
  *    DELETE: deletes contact by id
  */
 
-app.get("/users/:id", function(req, res) {
-  db.collection(USERS_COLLECTION).findOne({ _id: new ObjectID(req.params.id) }, function(err, doc) {
-    if (err) {
-      handleError(res, err.message, "Failed to get contact");
-    } else {
-      if(doc.events && doc.events.length>0){
-        let events = doc.events.map(function(eventId){
-          return new ObjectID(eventId);
-        });
-        let filter = {_id:{$in : events}};
-        db.collection(EVENTS_COLLECTION).find(filter).toArray(function(err, docs) {
-          if (err) {
-            handleError(res, err.message, "Failed to get events.");
-          } else {
-            doc.events = docs;
-            res.status(200).json(doc);
-          }
-        });
-      }else{
-        res.status(200).json(doc);
-      }
-    }
-  });
-});
+// app.get("/users/:id", function(req, res) {
+//
+// });
 
 app.put("/users/:id", function(req, res) {
   var updateDoc = req.body;
