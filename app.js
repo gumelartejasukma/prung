@@ -3,6 +3,8 @@ var bodyParser = require("body-parser");
 var mongodb = require("mongodb");
 var crypto = require('crypto');
 var imgur = require('imgur');
+var admin = require('firebase-admin');
+var serviceAccount = require('./test-4d3d2-firebase-adminsdk-x1ynq-fd6a948dfa.json');
 
 var ObjectID = mongodb.ObjectID;
 
@@ -15,6 +17,10 @@ var app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: 'https://test-4d3d2.firebaseio.com'
+});
 // Create link to Angular build directory
 // var distDir = __dirname + "/dist/";
 // app.use(express.static(distDir));
@@ -52,6 +58,13 @@ function handleError(res, reason, message, code) {
  *    GET: finds all contacts
  *    POST: creates a new contact
  */
+
+app.post("/fcmtoken",function(req,res){
+  var body = req.body;
+  db.collection(USERS_COLLECTION).updateOne({ _id : body.id},{fcm_token : body.token},function(err,res){
+    
+  });
+});
 
  app.post("/hashtag", function(req, res) {
    var hashtag = req.body;
@@ -352,4 +365,29 @@ function addUser(req,res){
       }
     });
   }
+}
+
+function fcmSend(){
+  // This registration token comes from the client FCM SDKs.
+  var registrationToken = 'YOUR_REGISTRATION_TOKEN';
+
+  // See documentation on defining a message payload.
+  var message = {
+    data: {
+      score: '850',
+      time: '2:45'
+    },
+    token: registrationToken
+  };
+
+  // Send a message to the device corresponding to the provided
+  // registration token.
+  admin.messaging().send(message)
+    .then((response) => {
+      // Response is a message ID string.
+      console.log('Successfully sent message:', response);
+    })
+    .catch((error) => {
+      console.log('Error sending message:', error);
+    });
 }
