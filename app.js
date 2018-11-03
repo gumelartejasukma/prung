@@ -381,17 +381,23 @@ function fcmSend(token,res){
   // var registrationToken = 'YOUR_REGISTRATION_TOKEN';
 
   // See documentation on defining a message payload.
+
+  var tokens = [token];
+
   var message = {
+    notification: {
+      title: '$GOOG up 1.43% on the day',
+      body: '$GOOG gained 11.80 points to close at 835.67, up 1.43% on the day.'
+    },
     data: {
       score: '850',
       time: '2:45'
-    },
-    token: token
+    }
   };
 
   // Send a message to the device corresponding to the provided
   // registration token.
-  admin.messaging().send(message)
+  admin.messaging().sendToDevice(tokens,message)
     .then((response) => {
       // Response is a message ID string.
       console.log('Successfully sent message:', response);
