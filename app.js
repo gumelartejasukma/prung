@@ -376,7 +376,7 @@ function addUser(req,res){
   }
 }
 
-function fcmSend(token){
+function fcmSend(token,res){
   // This registration token comes from the client FCM SDKs.
   // var registrationToken = 'YOUR_REGISTRATION_TOKEN';
 
@@ -395,8 +395,10 @@ function fcmSend(token){
     .then((response) => {
       // Response is a message ID string.
       console.log('Successfully sent message:', response);
+      res.status(200).json(response);
     })
     .catch((error) => {
       console.log('Error sending message:', error);
+      handleError(res, error, "Failed to fcm.");
     });
 }
