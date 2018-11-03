@@ -61,8 +61,12 @@ function handleError(res, reason, message, code) {
 
 app.post("/fcmtoken",function(req,res){
   var body = req.body;
-  db.collection(USERS_COLLECTION).updateOne({ _id : body.id},{fcm_token : body.token},function(err,res){
-    
+  db.collection(USERS_COLLECTION).updateOne({ _id : body.id},{fcm_token : body.token},function(err,doc){
+    if (err) {
+      handleError(res, err.message, "Failed to update token.");
+    } else {
+      res.status(200).json(doc);
+    }
   });
 });
 
