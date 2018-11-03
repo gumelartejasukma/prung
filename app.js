@@ -389,16 +389,20 @@ function fcmSend(token,res){
     //   title: '$GOOG up 1.43% on the day',
     //   body: '$GOOG gained 11.80 points to close at 835.67, up 1.43% on the day.',
     // },
-    data: {
-      score: '850',
-      time: '2:45'
-    },
+    // data: {
+    //   score: '850',
+    //   time: '2:45'
+    // },
     android:{
       ttl: 3600 * 1000, // 1 hour in milliseconds
       priority: 'high',
-      notification:{
-        sound: 'default',
-        color: '#f45342'
+      // notification:{
+      //   sound: 'default',
+      //   color: '#f45342'
+      // }
+      data: {
+        score: '850',
+        time: '2:45'
       }
     },
     token:token
