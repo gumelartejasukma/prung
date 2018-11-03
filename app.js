@@ -384,17 +384,24 @@ function fcmSend(token,res){
 
   var tokens = [token];
 
-  var payload = {
+  var message = {
     notification: {
       title: '$GOOG up 1.43% on the day',
       body: '$GOOG gained 11.80 points to close at 835.67, up 1.43% on the day.',
-      sound: 'default',
-      color: '#f45342'
     },
     data: {
       score: '850',
       time: '2:45'
-    }
+    },
+    android:{
+      ttl: 3600 * 1000, // 1 hour in milliseconds
+      priority: 'high',
+      notification:{
+        sound: 'default',
+        color: '#f45342'
+      }
+    },
+    token:token
   };
 
   // Set the message as high priority and have it expire after 24 hours.
@@ -405,7 +412,7 @@ function fcmSend(token,res){
 
   // Send a message to the device corresponding to the provided
   // registration token.
-  admin.messaging().sendToDevice(tokens,payload,options)
+  admin.messaging().send(message)
     .then((response) => {
       // Response is a message ID string.
       console.log('Successfully sent message:', response);
