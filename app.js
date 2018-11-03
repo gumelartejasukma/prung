@@ -389,6 +389,14 @@ function fcmSend(token,res){
       title: '$GOOG up 1.43% on the day',
       body: '$GOOG gained 11.80 points to close at 835.67, up 1.43% on the day.'
     },
+    android:{
+      priority: 'high',
+      notification: {
+        icon: 'stock_ticker_update',
+        color: '#f45342',
+        sound: 'default',
+      },
+    },
     data: {
       score: '850',
       time: '2:45'
