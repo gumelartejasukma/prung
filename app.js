@@ -59,6 +59,11 @@ function handleError(res, reason, message, code) {
  *    POST: creates a new contact
  */
 
+ app.post("/fcmtoken/test",function(req,res){
+   var body = req.body;
+   fcmSend(body.token);
+ });
+
 app.post("/fcmtoken",function(req,res){
   var body = req.body;
   db.collection(USERS_COLLECTION).findOneAndUpdate({ _id: new ObjectID(body.id) },{$set:{fcm_token:body.token}},{safe:true,upsert:true},function(err, doc) {
@@ -371,9 +376,9 @@ function addUser(req,res){
   }
 }
 
-function fcmSend(){
+function fcmSend(token){
   // This registration token comes from the client FCM SDKs.
-  var registrationToken = 'YOUR_REGISTRATION_TOKEN';
+  // var registrationToken = 'YOUR_REGISTRATION_TOKEN';
 
   // See documentation on defining a message payload.
   var message = {
@@ -381,7 +386,7 @@ function fcmSend(){
       score: '850',
       time: '2:45'
     },
-    token: registrationToken
+    token: token
   };
 
   // Send a message to the device corresponding to the provided
