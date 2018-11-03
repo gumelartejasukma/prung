@@ -385,10 +385,10 @@ function fcmSend(token,res){
   var tokens = [token];
 
   var message = {
-    // notification: {
-    //   title: '$GOOG up 1.43% on the day',
-    //   body: '$GOOG gained 11.80 points to close at 835.67, up 1.43% on the day.',
-    // },
+    notification: {
+      title: '$GOOG up 1.43% on the day',
+      body: '$GOOG gained 11.80 points to close at 835.67, up 1.43% on the day.',
+    },
     // data: {
     //   score: '850',
     //   time: '2:45'
