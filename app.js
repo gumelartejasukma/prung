@@ -29,7 +29,7 @@ admin.initializeApp({
 var db;
 
 // Connect to the database before starting the application server.
-mongodb.MongoClient.connect(process.env.MONGODB_URI || "mongodb+srv://admin:admin@cluster0-jofyq.gcp.mongodb.net/prungdb?retryWrites=true", function (err, client) {
+mongodb.MongoClient.connect(process.env.MONGODB_URI || "mongodb+srv://admin:admin@cluster0-jofyq.gcp.mongodb.net/prungdb?retryWrites=true",{ useNewUrlParser: true }, function (err, client) {
   if (err) {
     console.log(err);
     process.exit(1);
