@@ -61,7 +61,7 @@ function handleError(res, reason, message, code) {
 
  app.post("/fcmtoken/test",function(req,res){
    var body = req.body;
-   fcmSend(body.token);
+   fcmSend(body.token,res);
  });
 
 app.post("/fcmtoken",function(req,res){
