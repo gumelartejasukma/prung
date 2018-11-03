@@ -404,7 +404,8 @@ function fcmSend(token,res){
         title: 'title',
         body:'body',
         score: '850',
-        time: '2:45'
+        time: '2:45',
+        android_channel_id:'test-channel'
       }
     },
     token:token
