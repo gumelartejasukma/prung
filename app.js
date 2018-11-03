@@ -401,6 +401,8 @@ function fcmSend(token,res){
       //   color: '#f45342'
       // }
       data: {
+        title: 'title',
+        body:'body',
         score: '850',
         time: '2:45'
       }
